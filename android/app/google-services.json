@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "936572730315",
+    "project_id": "location-voitures-4cab2",
+    "storage_bucket": "location-voitures-4cab2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936572730315:android:b8ab2a6ad390325563944e",
+        "android_client_info": {
+          "package_name": "com.example.location_voitures"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936572730315-ke1uc1juaet5ef0qpfbbgk2g07r5lufm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQmptO4IcO1CsoV0o4u1NdPUP0ocLnpkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936572730315-ke1uc1juaet5ef0qpfbbgk2g07r5lufm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
