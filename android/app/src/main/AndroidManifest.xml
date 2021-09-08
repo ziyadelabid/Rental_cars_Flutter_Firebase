@@ -2,7 +2,9 @@
     package="com.example.location_voitures">
    <application
         android:label="location_voitures"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
+        
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
