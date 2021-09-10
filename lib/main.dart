@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:location_voitures/Screens/LoginScreen.dart';
+import 'package:location_voitures/Screens/VehicleScreen.dart';
 
 void main() async {
   runApp(MyApp());
@@ -42,10 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: LoginScreen());
+    return Scaffold(body: VehicleScreen());
   }
 }

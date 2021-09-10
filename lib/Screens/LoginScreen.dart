@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:location_voitures/Screens/HomeScreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:location_voitures/Screens/SignUpScreen.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -44,52 +47,164 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double widthDevice = MediaQuery.of(context).size.width;
+    double heightDevice = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
-          child: Form(
-            key: _loginFormKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Email', hintText: "john.doe@gmail.com"),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: emailValidator,
-                  controller: _emailController,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Confirm Password*', hintText: "********"),
-                  controller: _passwordController,
-                  validator: pwdValidator,
-                  obscureText: true,
-                ),
-                TextButton(
-                  onPressed: firebaseSignIn,
-                  child: Text(
-                    'submit',
-                    style: TextStyle(color: Colors.white),
+          child: Column(children: [
+            Container(
+              margin: EdgeInsets.only(top: heightDevice * 0.12),
+              child: Column(children: [
+                Text(
+                  "Sign In",
+                  style: TextStyle(
+                    color: Color(0XFF091424),
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'RobotoMono',
                   ),
-                  style: TextButton.styleFrom(backgroundColor: Colors.red),
                 ),
-                TextButton(
-                  onPressed: signInWithGoogle,
+                Container(
+                  margin: EdgeInsets.only(top: 10),
                   child: Text(
-                    'google',
-                    style: TextStyle(color: Colors.white),
+                    "Enter your credentials to continue",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 23,
+                      color: Color(0XFF091424),
+                      fontFamily: 'RobotoMono',
+                    ),
                   ),
-                  style: TextButton.styleFrom(backgroundColor: Colors.red),
                 )
-              ],
+              ]),
             ),
-          ),
+            Container(
+                margin: EdgeInsets.only(top: heightDevice * 0.05),
+                child: Lottie.asset('assets/animations/car-animation.json')),
+            Container(
+              margin: EdgeInsets.only(top: heightDevice * 0.02),
+              child: Form(
+                key: _loginFormKey,
+                child: Column(
+                  children: [
+                    Container(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                              margin: EdgeInsets.only(right: 10),
+                              child: Icon(
+                                Icons.email,
+                                size: 28,
+                              )),
+                          SizedBox(
+                            width: widthDevice * 0.8,
+                            child: TextFormField(
+                              decoration: InputDecoration(hintText: "Email"),
+                              keyboardType: TextInputType.emailAddress,
+                              validator: emailValidator,
+                              controller: _emailController,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: heightDevice * 0.02),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 5, right: 10),
+                            child: Icon(
+                              Icons.security,
+                              size: 28,
+                            ),
+                          ),
+                          SizedBox(
+                            width: widthDevice * 0.8,
+                            child: TextFormField(
+                              decoration: InputDecoration(hintText: "Password"),
+                              controller: _passwordController,
+                              validator: pwdValidator,
+                              obscureText: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: widthDevice * 0.1),
+                      child: SizedBox(
+                        width: widthDevice * 0.8,
+                        height: heightDevice * 0.09,
+                        child: TextButton(
+                          onPressed: firebaseSignIn,
+                          child: Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'RobotoMono',
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(35.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: widthDevice * 0.04),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "You don't have an account ! ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'RobotoMono',
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SignUpScreen()));
+                            },
+                            child: Text(
+                              "Register",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 18,
+                                fontFamily: 'RobotoMono',
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ]),
         ),
       ),
     );
   }
 
+//Connexion par email/mot de passe
   void firebaseSignIn() async {
     _loginFormKey.currentState!.validate();
     try {
@@ -111,6 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+//Connexion par Google
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -128,5 +244,19 @@ class _LoginScreenState extends State<LoginScreen> {
         context, MaterialPageRoute(builder: (context) => HomeScreen()));
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  //Connexion par Facebook
+  Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- Replace "343254889799245" with your Facebook App ID here. -->
+<string name="app_name">Location de Voitures</string>
+<string name="facebook_app_id">1204849173326946</string> 
+<string name="fb_login_protocol_scheme">fb1204849173326946</string>
+
+</resources>
