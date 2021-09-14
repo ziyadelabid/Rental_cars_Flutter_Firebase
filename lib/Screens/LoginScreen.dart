@@ -4,6 +4,7 @@ import 'package:location_voitures/Screens/HomeScreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:location_voitures/Screens/SignUpScreen.dart';
+import 'package:location_voitures/Screens/VehicleScreen.dart';
 import 'package:lottie/lottie.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -55,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(children: [
             Container(
-              margin: EdgeInsets.only(top: heightDevice * 0.12),
+              margin: EdgeInsets.only(top: heightDevice * 0.10),
               child: Column(children: [
                 Text(
                   "Sign In",
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 size: 28,
                               )),
                           SizedBox(
-                            width: widthDevice * 0.8,
+                            width: widthDevice * 0.7,
                             child: TextFormField(
                               decoration: InputDecoration(hintText: "Email"),
                               keyboardType: TextInputType.emailAddress,
@@ -126,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: widthDevice * 0.8,
+                            width: widthDevice * 0.7,
                             child: TextFormField(
                               decoration: InputDecoration(hintText: "Password"),
                               controller: _passwordController,
@@ -214,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
           .then((value) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => VehicleScreen()),
             (_) => false);
       });
     } on FirebaseAuthException catch (e) {

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:location_voitures/Screens/VehicleScreen.dart';
+import 'package:location_voitures/Screens/LoginScreen.dart';
 
 void main() async {
-  runApp(MyApp());
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -34,14 +35,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    Firebase.initializeApp().whenComplete(() {
-      print("completed");
-      setState(() {});
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: VehicleScreen());
+    return Scaffold(body: LoginScreen());
   }
 }
