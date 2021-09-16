@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:location_voitures/Screens/ReservationScreen.dart';
 import 'package:lottie/lottie.dart';
 
 class DetailsVehicleScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class DetailsVehicleScreen extends StatefulWidget {
       imageVoiture;
 
   final double review;
-  final int speed, price;
+  final int speed, price, idVoiture;
   DetailsVehicleScreen(
       this.brand,
       this.modelYear,
@@ -22,7 +23,8 @@ class DetailsVehicleScreen extends StatefulWidget {
       this.speed,
       this.emplacementPrise,
       this.price,
-      this.imageVoiture);
+      this.imageVoiture,
+      this.idVoiture);
 
   @override
   _DetailsVehicleScreenState createState() => _DetailsVehicleScreenState();
@@ -57,7 +59,19 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
                 height: 58,
                 width: widthDevice * 0.5,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ReservationScreen(
+                                widget.brand,
+                                widget.modelYear,
+                                widget.emplacementPrise,
+                                widget.price,
+                                widget.imageVoiture,
+                                widget.idVoiture,
+                                widget.review)));
+                  },
                   child: Text(
                     "Book Now",
                     style: TextStyle(

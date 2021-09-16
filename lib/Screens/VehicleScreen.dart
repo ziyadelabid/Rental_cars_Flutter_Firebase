@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:location_voitures/Controllers/vehicleController.dart';
 import 'package:location_voitures/Drawers/DrawerUser.dart';
 import 'package:location_voitures/Screens/DetailsVehicleScreen.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class VehicleScreen extends StatefulWidget {
   const VehicleScreen({Key? key}) : super(key: key);
@@ -15,9 +16,10 @@ class VehicleScreen extends StatefulWidget {
 class _VehicleScreenState extends State<VehicleScreen> {
   final CollectionReference vehiclesList =
       FirebaseFirestore.instance.collection('Vehicles');
-  List vehicleList = [];
+  List vehicleList = [], promotionList = [];
 
-  fetchSpecialVehicles() async {
+  fetchVehicles() async {
+    await fetchPromotionVehicles();
     dynamic result;
     if (changeWidget == "") {
       result = await VehicleController().getVehiclesList();
@@ -29,6 +31,17 @@ class _VehicleScreenState extends State<VehicleScreen> {
     } else {
       setState(() {
         vehicleList = result;
+      });
+    }
+  }
+
+  fetchPromotionVehicles() async {
+    dynamic result = await getPromotionVehicles();
+    if (result == null) {
+      print("unenable to retrieve data");
+    } else {
+      setState(() {
+        promotionList = result;
       });
     }
   }
@@ -49,10 +62,27 @@ class _VehicleScreenState extends State<VehicleScreen> {
     }
   }
 
+  Future getPromotionVehicles() async {
+    List promotionList = [];
+    try {
+      await vehiclesList
+          .where("promotion", isNotEqualTo: 0)
+          .get()
+          .then((value) => value.docs.forEach((element) {
+                promotionList.add(element);
+              }));
+      return promotionList;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   var changeWidget = "";
   @override
   void initState() {
-    fetchSpecialVehicles();
+    fetchVehicles();
+
     super.initState();
   }
 
@@ -61,7 +91,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
     double widthDevice = MediaQuery.of(context).size.width;
     double heightDevice = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(elevation: 0, backgroundColor: Colors.red),
+      appBar: AppBar(elevation: 0, backgroundColor: Colors.black),
       drawer: DrawerUser(),
       backgroundColor: Color(0XFFf2f2f2),
       body: Container(
@@ -69,12 +99,87 @@ class _VehicleScreenState extends State<VehicleScreen> {
           physics: ScrollPhysics(),
           child: Column(children: [
             Container(
-              color: Colors.red,
-              height: 200,
-              child: Center(
-                child: Text(
-                  "Promotions",
+              color: Colors.black,
+              height: heightDevice * 0.3,
+              child: CarouselSlider.builder(
+                options: CarouselOptions(
+                  viewportFraction: 1,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 2),
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.easeIn,
                 ),
+                itemCount: promotionList.length,
+                itemBuilder: (BuildContext context, int itemIndex,
+                        int pageViewIndex) =>
+                    Container(
+                        width: double.infinity,
+                        child: Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                alignment: Alignment.centerRight,
+                                margin:
+                                    EdgeInsets.only(right: widthDevice * 0.06),
+                                child: Column(children: [
+                                  Container(
+                                      margin: EdgeInsets.only(
+                                          top: heightDevice * 0.01),
+                                      child: Text(
+                                        promotionList[itemIndex]['brand']
+                                                .toString() +
+                                            " " +
+                                            promotionList[itemIndex]
+                                                    ['modelYear']
+                                                .toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 22),
+                                      )),
+                                  Container(
+                                    child: Text(
+                                      "\$" +
+                                          promotionList[itemIndex]['price']
+                                              .toString() +
+                                          "/day",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
+                                ]),
+                              ),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      child: Image.asset(
+                                        "assets/images/" +
+                                            promotionList[itemIndex]
+                                                    ['imageVoiture']
+                                                .toString(),
+                                        height: heightDevice * 0.20,
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(90),
+                                          color: Colors.red),
+                                      margin: EdgeInsets.only(
+                                          right: widthDevice * 0.01),
+                                      child: Icon(
+                                        Icons.navigate_next_rounded,
+                                        color: Colors.white,
+                                        size: 22,
+                                      ),
+                                    )
+                                  ]),
+                            ],
+                          ),
+                        )),
               ),
             ),
             Container(
@@ -102,7 +207,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                             onTap: () {
                               setState(() {
                                 changeWidget = "";
-                                fetchSpecialVehicles();
+                                fetchVehicles();
                               });
                             },
                             child: Container(
@@ -129,7 +234,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                             onTap: () {
                               setState(() {
                                 changeWidget = "Bmw";
-                                fetchSpecialVehicles();
+                                fetchVehicles();
                               });
                             },
                             child: Container(
@@ -155,7 +260,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                             onTap: () {
                               setState(() {
                                 changeWidget = "Audi";
-                                fetchSpecialVehicles();
+                                fetchVehicles();
                               });
                             },
                             child: Container(
@@ -179,7 +284,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              fetchSpecialVehicles();
+                              fetchVehicles();
                             },
                             child: Container(
                               margin: EdgeInsets.only(
@@ -204,7 +309,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                             onTap: () {
                               setState(() {
                                 changeWidget = "Maserati";
-                                fetchSpecialVehicles();
+                                fetchVehicles();
                               });
                             },
                             child: Container(
@@ -295,8 +400,10 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                         bottom: heightDevice * 0.02,
                                       ),
                                       child: Text(
-                                        vehicleList[index]['price'].toString() +
-                                            "\$/day",
+                                        "\$" +
+                                            vehicleList[index]['price']
+                                                .toString() +
+                                            "/day",
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 22,
@@ -370,7 +477,9 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                                             vehicleList[index]
                                                                 ['price'],
                                                             vehicleList[index][
-                                                                'imageVoiture'])));
+                                                                'imageVoiture'],
+                                                            vehicleList[index][
+                                                                'idVoiture'])));
                                           },
                                           child: Text(
                                             "Details",

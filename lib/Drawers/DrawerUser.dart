@@ -15,7 +15,7 @@ class _DrawerUserState extends State<DrawerUser> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   String? userEmail = "", userId = "";
-  String firstName = "", lastName = "";
+  String firstName = "H", lastName = "";
 
   @override
   void initState() {
@@ -38,6 +38,7 @@ class _DrawerUserState extends State<DrawerUser> {
       if (documentSnapshot.exists) {
         setState(() {
           lastName = documentSnapshot.get("lastName");
+          firstName = documentSnapshot.get("firstName");
         });
         print('Document data: ${documentSnapshot.get("lastName")}');
       } else {
@@ -48,56 +49,104 @@ class _DrawerUserState extends State<DrawerUser> {
 
   @override
   Widget build(BuildContext context) {
+    double widthDevice = MediaQuery.of(context).size.width;
+    double heightDevice = MediaQuery.of(context).size.height;
     return Drawer(
       child: ListView(
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
-          new UserAccountsDrawerHeader(
-            accountName: Text(
-              lastName,
-              style: TextStyle(color: Colors.red),
-            ),
-            accountEmail: Text(
-              userEmail!,
-              style: TextStyle(color: Colors.red),
-            ),
-            decoration: BoxDecoration(color: Colors.white),
-            currentAccountPicture: new CircleAvatar(
-              radius: 50.0,
-              backgroundColor: const Color(0xFF778899),
-              backgroundImage:
-                  NetworkImage("http://tineye.com/images/widgets/mona.jpg"),
-            ),
+          Container(
+            height: heightDevice * 0.3,
+            color: Colors.black,
+            child: Column(children: [
+              Container(
+                  margin: EdgeInsets.only(
+                      top: heightDevice * 0.05, left: widthDevice * 0.06),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Settings",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w500),
+                      ))),
+              Container(
+                margin: EdgeInsets.only(
+                    top: heightDevice * 0.05, left: widthDevice * 0.06),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: CircleAvatar(
+                        radius: 34,
+                        child: Text(
+                          firstName[0].toString(),
+                          style: TextStyle(fontSize: 22),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: heightDevice * 0.015, left: widthDevice * 0.03),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hello",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            firstName.toString() + " " + lastName.toString(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ]),
           ),
-          ListTile(
-            title: const Text('My Reservations'),
-            onTap: () {
-              Navigator.pop(context);
-            },
+          Container(
+            child: Column(children: [
+              ListTile(
+                title: const Text('Profil'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('My Reservations'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('All Cars'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Report'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                onPressed: signOutFromGoogle,
+                child: Text("Log Out"),
+              )
+            ]),
           ),
-          ListTile(
-            title: const Text('All Cars'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Report'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Profil'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          TextButton(
-            onPressed: signOutFromGoogle,
-            child: Text("Log Out"),
-          )
         ],
       ),
     );
