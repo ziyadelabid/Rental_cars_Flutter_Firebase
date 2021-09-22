@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:location_voitures/Constants/constants.dart';
 import 'package:location_voitures/Screens/ReservationScreen.dart';
 import 'package:lottie/lottie.dart';
 
@@ -39,7 +40,7 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
       bottomNavigationBar: BottomAppBar(
         child: Container(
           decoration: BoxDecoration(
-            color: Color(0XFF78000a),
+            color: Color(0XFFEC8921),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,41 +50,44 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
                 child: Text(
                   widget.price.toString() + "DH/day",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                   ),
                 ),
               ),
-              SizedBox(
-                height: 58,
-                width: widthDevice * 0.5,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ReservationScreen(
-                                widget.brand,
-                                widget.modelYear,
-                                widget.emplacementPrise,
-                                widget.price,
-                                widget.imageVoiture,
-                                widget.idVoiture,
-                                widget.review)));
-                  },
-                  child: Text(
-                    "Book Now",
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.only(topLeft: Radius.circular(25))),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: SizedBox(
+                  height: heightDevice * 0.1,
+                  width: widthDevice * 0.5,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ReservationScreen(
+                                  widget.brand,
+                                  widget.modelYear,
+                                  widget.emplacementPrise,
+                                  widget.price,
+                                  widget.imageVoiture,
+                                  widget.idVoiture,
+                                  widget.review)));
+                    },
+                    child: Text(
+                      "Book Now",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.only(topLeft: Radius.circular(25))),
+                    ),
                   ),
                 ),
               )
@@ -93,7 +97,7 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
           width: double.maxFinite,
         ),
       ),
-      appBar: AppBar(backgroundColor: Colors.black, elevation: 0, actions: [
+      appBar: AppBar(backgroundColor: primaryColor, elevation: 0, actions: [
         Container(
             margin: EdgeInsets.only(right: widthDevice * 0.03),
             child: Icon(Icons.more_horiz, size: 22)),
@@ -104,7 +108,7 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
           Container(
             height: heightDevice * 0.4,
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: primaryColor,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(40),
                 bottomRight: Radius.circular(40),
@@ -203,7 +207,7 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
                     height: heightDevice * 0.17,
                     width: heightDevice * 0.22,
                     decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: secondColor,
                         borderRadius: BorderRadius.circular(25)),
                     child: Center(
                       child: Column(
@@ -231,7 +235,7 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
                     height: heightDevice * 0.17,
                     width: heightDevice * 0.22,
                     decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: secondColor,
                         borderRadius: BorderRadius.circular(25)),
                     child: Center(
                       child: Column(
@@ -259,7 +263,7 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
                     height: heightDevice * 0.17,
                     width: heightDevice * 0.22,
                     decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: secondColor,
                         borderRadius: BorderRadius.circular(25)),
                     child: Center(
                       child: Column(
@@ -277,6 +281,63 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
                                 fontSize: 20,
                               ),
                             ),
+                          ]),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: widthDevice * 0.04,
+                    ),
+                    height: heightDevice * 0.17,
+                    width: heightDevice * 0.22,
+                    decoration: BoxDecoration(
+                        color: secondColor,
+                        borderRadius: BorderRadius.circular(25)),
+                    child: Center(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/Icons/carChair.svg",
+                                    color: Colors.white,
+                                    width: widthDevice * 0.1,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                        left: widthDevice * 0.02),
+                                    child: Text(
+                                      "4 Sits",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/Icons/carDoor.svg",
+                                    color: Colors.white,
+                                    width: widthDevice * 0.08,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                        left: widthDevice * 0.02),
+                                    child: Text(
+                                      "4 Doors",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ]),
                           ]),
                     ),
                   ),

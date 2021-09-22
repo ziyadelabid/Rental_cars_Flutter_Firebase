@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Text(
                             "You don't have an account ! ",
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontFamily: 'RobotoMono',
                             ),
                           ),
@@ -186,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               "Register",
                               style: TextStyle(
                                 color: Colors.red,
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontFamily: 'RobotoMono',
                                 fontWeight: FontWeight.bold,
                               ),
@@ -213,6 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
           .signInWithEmailAndPassword(
               email: _emailController.text, password: _passwordController.text)
           .then((value) {
+          
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => VehicleScreen()),

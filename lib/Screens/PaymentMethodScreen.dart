@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:location_voitures/Constants/constants.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   final String brand, modelYear, emplacementPrise, imageVoiture;
@@ -52,23 +53,26 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 58,
-                width: widthDevice * 0.5,
-                child: TextButton(
-                  onPressed: _addReservation,
-                  child: Text(
-                    "Confirm",
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.only(topLeft: Radius.circular(25))),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: SizedBox(
+                  height: heightDevice * 0.1,
+                  width: widthDevice * 0.5,
+                  child: TextButton(
+                    onPressed: _addReservation,
+                    child: Text(
+                      "Confirm",
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.only(topLeft: Radius.circular(25))),
+                    ),
                   ),
                 ),
               )
@@ -78,7 +82,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
           width: double.maxFinite,
         ),
       ),
-      appBar: AppBar(backgroundColor: Colors.black, elevation: 0, actions: [
+      appBar: AppBar(backgroundColor: primaryColor, elevation: 0, actions: [
         Container(
             margin: EdgeInsets.only(right: widthDevice * 0.03),
             child: Icon(Icons.more_horiz, size: 22)),
@@ -90,7 +94,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             Container(
               height: heightDevice * 0.32,
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: primaryColor,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
                   bottomRight: Radius.circular(40),
@@ -183,7 +187,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     firestoreIns.collection("Reservations").doc().set({
       "idUser": uid,
       "idVehicle": widget.idVoiture,
-      "dateReservation ": widget.startDate,
+      "brandR": widget.brand,
+      "modelYearR": widget.modelYear,
+      "imageVoitureR": widget.imageVoiture,
+      "dateReservation": widget.startDate,
       "dateRetour": widget.endDate,
       "montantTotal": widget.totalMontant,
       "paymentMethod": "Cash",

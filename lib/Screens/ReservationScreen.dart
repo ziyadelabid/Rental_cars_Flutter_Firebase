@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_voitures/Constants/constants.dart';
 import 'package:location_voitures/Screens/PaymentMethodScreen.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
@@ -18,9 +19,8 @@ class ReservationScreen extends StatefulWidget {
 class _ReservationScreenState extends State<ReservationScreen> {
   String _range = '', _startReservationDate = '', _endReservationDate = '';
   int difference = 0, totalMontant = 0;
-  DateTime startDate= DateTime.now();
-   DateTime endDate= DateTime.now();
-
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -40,31 +40,48 @@ class _ReservationScreenState extends State<ReservationScreen> {
                 child: Text(
                   "Total : " + totalMontant.toString() + "DH",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                   ),
                 ),
               ),
-              SizedBox(
-                height: 58,
-                width: widthDevice * 0.5,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PaymentMethodScreen(widget.brand, widget.modelYear, widget.emplacementPrise, widget.price, widget.imageVoiture, widget.idVoiture, widget.review,totalMontant,difference,startDate,endDate)));
-                  },
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.only(topLeft: Radius.circular(25))),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: SizedBox(
+                  height: heightDevice * 0.1,
+                  width: widthDevice * 0.5,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PaymentMethodScreen(
+                                  widget.brand,
+                                  widget.modelYear,
+                                  widget.emplacementPrise,
+                                  widget.price,
+                                  widget.imageVoiture,
+                                  widget.idVoiture,
+                                  widget.review,
+                                  totalMontant,
+                                  difference,
+                                  startDate,
+                                  endDate)));
+                    },
+                    child: Text(
+                      "Next",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.only(topLeft: Radius.circular(25))),
+                    ),
                   ),
                 ),
               )
@@ -74,7 +91,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
           width: double.maxFinite,
         ),
       ),
-      appBar: AppBar(backgroundColor: Colors.black, elevation: 0, actions: [
+      appBar: AppBar(backgroundColor: primaryColor, elevation: 0, actions: [
         Container(
             margin: EdgeInsets.only(right: widthDevice * 0.03),
             child: Icon(Icons.more_horiz, size: 22)),
@@ -86,7 +103,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
             Container(
               height: heightDevice * 0.32,
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: primaryColor,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
                   bottomRight: Radius.circular(40),
@@ -202,4 +219,3 @@ class _ReservationScreenState extends State<ReservationScreen> {
     });
   }
 }
-

@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:location_voitures/Controllers/vehicleController.dart';
 import 'package:location_voitures/Drawers/DrawerUser.dart';
 import 'package:location_voitures/Screens/DetailsVehicleScreen.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:location_voitures/Constants/constants.dart';
 
 class VehicleScreen extends StatefulWidget {
   const VehicleScreen({Key? key}) : super(key: key);
@@ -14,12 +14,13 @@ class VehicleScreen extends StatefulWidget {
 }
 
 class _VehicleScreenState extends State<VehicleScreen> {
+  final Stream<QuerySnapshot> _promotionsStream =
+      FirebaseFirestore.instance.collection('Vehicles').snapshots();
   final CollectionReference vehiclesList =
       FirebaseFirestore.instance.collection('Vehicles');
-  List vehicleList = [], promotionList = [];
+  List vehicleList = [];
 
   fetchVehicles() async {
-    await fetchPromotionVehicles();
     dynamic result;
     if (changeWidget == "") {
       result = await VehicleController().getVehiclesList();
@@ -31,17 +32,6 @@ class _VehicleScreenState extends State<VehicleScreen> {
     } else {
       setState(() {
         vehicleList = result;
-      });
-    }
-  }
-
-  fetchPromotionVehicles() async {
-    dynamic result = await getPromotionVehicles();
-    if (result == null) {
-      print("unenable to retrieve data");
-    } else {
-      setState(() {
-        promotionList = result;
       });
     }
   }
@@ -62,22 +52,6 @@ class _VehicleScreenState extends State<VehicleScreen> {
     }
   }
 
-  Future getPromotionVehicles() async {
-    List promotionList = [];
-    try {
-      await vehiclesList
-          .where("promotion", isNotEqualTo: 0)
-          .get()
-          .then((value) => value.docs.forEach((element) {
-                promotionList.add(element);
-              }));
-      return promotionList;
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
-
   var changeWidget = "";
   @override
   void initState() {
@@ -91,7 +65,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
     double widthDevice = MediaQuery.of(context).size.width;
     double heightDevice = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(elevation: 0, backgroundColor: Colors.black),
+      appBar: AppBar(elevation: 0, backgroundColor: primaryColor),
       drawer: DrawerUser(),
       backgroundColor: Color(0XFFf2f2f2),
       body: Container(
@@ -99,87 +73,37 @@ class _VehicleScreenState extends State<VehicleScreen> {
           physics: ScrollPhysics(),
           child: Column(children: [
             Container(
-              color: Colors.black,
+              width: double.infinity,
+              color: primaryColor,
               height: heightDevice * 0.3,
-              child: CarouselSlider.builder(
-                options: CarouselOptions(
-                  viewportFraction: 1,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 2),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.easeIn,
-                ),
-                itemCount: promotionList.length,
-                itemBuilder: (BuildContext context, int itemIndex,
-                        int pageViewIndex) =>
-                    Container(
-                        width: double.infinity,
-                        child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                alignment: Alignment.centerRight,
-                                margin:
-                                    EdgeInsets.only(right: widthDevice * 0.06),
-                                child: Column(children: [
-                                  Container(
-                                      margin: EdgeInsets.only(
-                                          top: heightDevice * 0.01),
-                                      child: Text(
-                                        promotionList[itemIndex]['brand']
-                                                .toString() +
-                                            " " +
-                                            promotionList[itemIndex]
-                                                    ['modelYear']
-                                                .toString(),
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 22),
-                                      )),
-                                  Container(
-                                    child: Text(
-                                      "\$" +
-                                          promotionList[itemIndex]['price']
-                                              .toString() +
-                                          "/day",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  )
-                                ]),
-                              ),
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      child: Image.asset(
-                                        "assets/images/" +
-                                            promotionList[itemIndex]
-                                                    ['imageVoiture']
-                                                .toString(),
-                                        height: heightDevice * 0.20,
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(90),
-                                          color: Colors.red),
-                                      margin: EdgeInsets.only(
-                                          right: widthDevice * 0.01),
-                                      child: Icon(
-                                        Icons.navigate_next_rounded,
-                                        color: Colors.white,
-                                        size: 22,
-                                      ),
-                                    )
-                                  ]),
-                            ],
-                          ),
-                        )),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _promotionsStream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Something went wrong');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Loading");
+                  }
+
+                  return ListView(
+                    scrollDirection: Axis.horizontal,
+                    children:
+                        snapshot.data!.docs.map((DocumentSnapshot document) {
+                      Map<String, dynamic> data =
+                          document.data()! as Map<String, dynamic>;
+                      return Container(
+                        width: widthDevice,
+                        child: ListTile(
+                          title: Text(data['brand']),
+                          subtitle: Text(data['modelYear']),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
               ),
             ),
             Container(
@@ -215,7 +139,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                   left: widthDevice * 0.03,
                                   top: heightDevice * 0.015),
                               decoration: BoxDecoration(
-                                  color: Colors.black,
+                                  color: secondColor,
                                   borderRadius: BorderRadius.circular(25)),
                               width: 70,
                               height: 70,
@@ -242,7 +166,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                   left: widthDevice * 0.03,
                                   top: heightDevice * 0.015),
                               decoration: BoxDecoration(
-                                  color: Colors.black,
+                                  color: secondColor,
                                   borderRadius: BorderRadius.circular(25)),
                               width: 70,
                               height: 70,
@@ -268,7 +192,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                   left: widthDevice * 0.03,
                                   top: heightDevice * 0.015),
                               decoration: BoxDecoration(
-                                  color: Colors.black,
+                                  color: secondColor,
                                   borderRadius: BorderRadius.circular(25)),
                               width: 70,
                               height: 70,
@@ -291,7 +215,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                   left: widthDevice * 0.03,
                                   top: heightDevice * 0.015),
                               decoration: BoxDecoration(
-                                  color: Colors.black,
+                                  color: secondColor,
                                   borderRadius: BorderRadius.circular(25)),
                               width: 70,
                               height: 70,
@@ -318,7 +242,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                 top: heightDevice * 0.015,
                               ),
                               decoration: BoxDecoration(
-                                  color: Colors.black,
+                                  color: secondColor,
                                   borderRadius: BorderRadius.circular(25)),
                               width: 70,
                               height: 70,
@@ -378,9 +302,10 @@ class _VehicleScreenState extends State<VehicleScreen> {
                           height: heightDevice * 0.2,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(35),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                           child: Container(
+                            padding: EdgeInsets.all(5),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -406,7 +331,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                             "/day",
                                         style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 22,
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -489,7 +414,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                                 fontSize: 17),
                                           ),
                                           style: TextButton.styleFrom(
-                                            backgroundColor: Colors.black,
+                                            backgroundColor: primaryColor,
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.only(
                                                     topLeft:

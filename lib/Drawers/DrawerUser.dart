@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:location_voitures/Constants/constants.dart';
 import 'package:location_voitures/Screens/LoginScreen.dart';
+import 'package:location_voitures/Screens/MyReservationScreen.dart';
+import 'package:location_voitures/Screens/ProfilUserScreen.dart';
 
 class DrawerUser extends StatefulWidget {
   const DrawerUser({Key? key}) : super(key: key);
@@ -15,7 +18,7 @@ class _DrawerUserState extends State<DrawerUser> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   String? userEmail = "", userId = "";
-  String firstName = "H", lastName = "";
+  String firstName = "H", lastName = "", gender = "", phoneNumber = "";
 
   @override
   void initState() {
@@ -39,6 +42,8 @@ class _DrawerUserState extends State<DrawerUser> {
         setState(() {
           lastName = documentSnapshot.get("lastName");
           firstName = documentSnapshot.get("firstName");
+          gender = documentSnapshot.get("gender");
+          phoneNumber = documentSnapshot.get("phoneNumber");
         });
         print('Document data: ${documentSnapshot.get("lastName")}');
       } else {
@@ -58,7 +63,7 @@ class _DrawerUserState extends State<DrawerUser> {
         children: [
           Container(
             height: heightDevice * 0.3,
-            color: Colors.black,
+            color: primaryColor,
             child: Column(children: [
               Container(
                   margin: EdgeInsets.only(
@@ -80,6 +85,7 @@ class _DrawerUserState extends State<DrawerUser> {
                   children: [
                     Container(
                       child: CircleAvatar(
+                        backgroundColor: secondColor,
                         radius: 34,
                         child: Text(
                           firstName[0].toString(),
@@ -121,12 +127,26 @@ class _DrawerUserState extends State<DrawerUser> {
                 title: const Text('Profil'),
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfilUserScreen(
+                              userEmail,
+                              userId,
+                              firstName,
+                              lastName,
+                              phoneNumber,
+                              gender)));
                 },
               ),
               ListTile(
                 title: const Text('My Reservations'),
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyReservationsScreen(userId)));
                 },
               ),
               ListTile(

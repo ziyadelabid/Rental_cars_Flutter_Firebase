@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:location_voitures/Screens/LoginScreen.dart';
 
-
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
@@ -18,6 +17,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _confirmPwdController = TextEditingController();
   var _firstNameController = TextEditingController();
   var _lastNameController = TextEditingController();
+  var _phoneNumberController = TextEditingController();
+  var items = ["male", "female"];
+  String genderValue = "male";
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _confirmPwdController = new TextEditingController();
     _firstNameController = new TextEditingController();
     _lastNameController = new TextEditingController();
+    _phoneNumberController = new TextEditingController();
 
     super.initState();
   }
@@ -87,6 +90,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(
+                      labelText: 'Phone number', hintText: "062837283"),
+                  keyboardType: TextInputType.phone,
+                  controller: _phoneNumberController,
+                ),
+                DropdownButton(
+                    isExpanded: true,
+                    value: genderValue,
+                    items: items.map((String items) {
+                      return DropdownMenuItem(
+                        value: items,
+                        child: Text(items),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        genderValue = newValue!;
+                      });
+                    }),
+                TextFormField(
+                  decoration: InputDecoration(
                       labelText: 'Password', hintText: "********"),
                   obscureText: true,
                   controller: _passwordController,
@@ -130,7 +153,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               .set({
             "firstName": _firstNameController.text,
             "lastName": _lastNameController.text,
-            "email ": value.user!.email,
+            "email": value.user!.email,
+            "phoneNumber": _phoneNumberController.text,
+            "gender": genderValue,
           });
         }).then((value) => Navigator.pushAndRemoveUntil(
                 context,
@@ -164,6 +189,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
           });
     }
   }
-
-  
 }
