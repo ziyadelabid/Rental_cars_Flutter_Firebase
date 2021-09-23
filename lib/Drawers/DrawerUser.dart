@@ -85,11 +85,11 @@ class _DrawerUserState extends State<DrawerUser> {
                   children: [
                     Container(
                       child: CircleAvatar(
-                        backgroundColor: secondColor,
+                        backgroundColor: Colors.orange,
                         radius: 34,
                         child: Text(
                           firstName[0].toString(),
-                          style: TextStyle(fontSize: 22),
+                          style: TextStyle(fontSize: 22, color: Colors.white),
                         ),
                       ),
                     ),
@@ -161,9 +161,24 @@ class _DrawerUserState extends State<DrawerUser> {
                   Navigator.pop(context);
                 },
               ),
-              TextButton(
-                onPressed: signOutFromGoogle,
-                child: Text("Log Out"),
+              SizedBox(
+                width: widthDevice * 0.25,
+                child: TextButton(
+                  onPressed: signOutFromGoogle,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  child: Row(children: [
+                    Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      "Log Out",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ]),
+                ),
               )
             ]),
           ),

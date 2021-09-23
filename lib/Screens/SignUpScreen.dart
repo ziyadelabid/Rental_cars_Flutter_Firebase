@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:location_voitures/Constants/constants.dart';
 import 'package:location_voitures/Screens/LoginScreen.dart';
+import 'package:lottie/lottie.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -17,9 +19,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _confirmPwdController = TextEditingController();
   var _firstNameController = TextEditingController();
   var _lastNameController = TextEditingController();
-  var _phoneNumberController = TextEditingController();
-  var items = ["male", "female"];
-  String genderValue = "male";
 
   @override
   void initState() {
@@ -28,7 +27,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _confirmPwdController = new TextEditingController();
     _firstNameController = new TextEditingController();
     _lastNameController = new TextEditingController();
-    _phoneNumberController = new TextEditingController();
 
     super.initState();
   }
@@ -54,86 +52,167 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double widthDevice = MediaQuery.of(context).size.width;
+    double heightDevice = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _registerFormKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'First Name*', hintText: "John"),
-                  controller: _firstNameController,
-                  validator: (value) {
-                    if (value!.length < 3) {
-                      return "Please enter a valid first name.";
-                    }
-                  },
-                ),
-                TextFormField(
-                    decoration: InputDecoration(
-                        labelText: 'Last Name*', hintText: "Doe"),
-                    controller: _lastNameController,
-                    validator: (value) {
-                      if (value!.length < 3) {
-                        return "Please enter a valid last name.";
-                      }
-                    }),
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Email', hintText: "john.doe@gmail.com"),
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  validator: emailValidator,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Phone number', hintText: "062837283"),
-                  keyboardType: TextInputType.phone,
-                  controller: _phoneNumberController,
-                ),
-                DropdownButton(
-                    isExpanded: true,
-                    value: genderValue,
-                    items: items.map((String items) {
-                      return DropdownMenuItem(
-                        value: items,
-                        child: Text(items),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        genderValue = newValue!;
-                      });
-                    }),
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Password', hintText: "********"),
-                  obscureText: true,
-                  controller: _passwordController,
-                  validator: pwdValidator,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Confirm Password*', hintText: "********"),
-                  controller: _confirmPwdController,
-                  obscureText: true,
-                  validator: pwdValidator,
-                ),
-                TextButton(
-                  onPressed: firebaseRegistration,
-                  child: Text(
-                    'submit',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: TextButton.styleFrom(backgroundColor: Colors.red),
-                ),
-              ],
+        child: Stack(children: [
+          Container(
+            height: heightDevice * 0.4,
+            decoration: BoxDecoration(
+              color: primaryColor,
             ),
           ),
-        ),
+          Container(
+            margin: EdgeInsets.only(top: heightDevice * 0.03),
+            child: Lottie.asset('assets/animations/animation.json', width: 250),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: heightDevice * 0.35),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(45),
+                topRight: Radius.circular(45),
+              ),
+            ),
+            child: SingleChildScrollView(
+              child: Container(
+                child: Form(
+                  key: _registerFormKey,
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: widthDevice * 0.1, top: heightDevice * 0.04),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Email",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15),
+                            )),
+                      ),
+                      Container(
+                        width: widthDevice * 0.8,
+                        child: TextFormField(
+                          decoration:
+                              InputDecoration(hintText: "john.doe@gmail.com"),
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _emailController,
+                          validator: emailValidator,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: widthDevice * 0.1, top: heightDevice * 0.04),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Password",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15),
+                            )),
+                      ),
+                      Container(
+                        width: widthDevice * 0.8,
+                        child: TextFormField(
+                          decoration: InputDecoration(hintText: "********"),
+                          obscureText: true,
+                          controller: _passwordController,
+                          validator: pwdValidator,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: widthDevice * 0.1, top: heightDevice * 0.04),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Confirm Password",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15),
+                            )),
+                      ),
+                      Container(
+                        width: widthDevice * 0.8,
+                        child: TextFormField(
+                          decoration: InputDecoration(hintText: "********"),
+                          controller: _confirmPwdController,
+                          obscureText: true,
+                          validator: pwdValidator,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: widthDevice * 0.1),
+                        child: SizedBox(
+                          width: widthDevice * 0.8,
+                          height: heightDevice * 0.09,
+                          child: TextButton(
+                            onPressed: firebaseRegistration,
+                            child: Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'RobotoMono',
+                              ),
+                            ),
+                            style: TextButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(35.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: widthDevice * 0.04),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Already have an account ! ",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'RobotoMono',
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()));
+                              },
+                              child: Text(
+                                "Sign In",
+                                style: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 16,
+                                  fontFamily: 'RobotoMono',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -151,11 +230,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               .collection("Users")
               .doc(value.user!.uid)
               .set({
-            "firstName": _firstNameController.text,
-            "lastName": _lastNameController.text,
             "email": value.user!.email,
-            "phoneNumber": _phoneNumberController.text,
-            "gender": genderValue,
+            "firstName": " ",
+            "lastName": " ",
+            "phoneNumber": " ",
+            "gender": " ",
           });
         }).then((value) => Navigator.pushAndRemoveUntil(
                 context,

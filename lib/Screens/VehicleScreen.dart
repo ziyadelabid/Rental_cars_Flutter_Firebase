@@ -14,8 +14,10 @@ class VehicleScreen extends StatefulWidget {
 }
 
 class _VehicleScreenState extends State<VehicleScreen> {
-  final Stream<QuerySnapshot> _promotionsStream =
-      FirebaseFirestore.instance.collection('Vehicles').snapshots();
+  final Stream<QuerySnapshot> _promotionsStream = FirebaseFirestore.instance
+      .collection('Vehicles')
+      .where('promotion', isNotEqualTo: 0)
+      .snapshots();
   final CollectionReference vehiclesList =
       FirebaseFirestore.instance.collection('Vehicles');
   List vehicleList = [];
@@ -95,12 +97,90 @@ class _VehicleScreenState extends State<VehicleScreen> {
                       Map<String, dynamic> data =
                           document.data()! as Map<String, dynamic>;
                       return Container(
-                        width: widthDevice,
-                        child: ListTile(
-                          title: Text(data['brand']),
-                          subtitle: Text(data['modelYear']),
-                        ),
-                      );
+                          width: widthDevice,
+                          child: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  margin: EdgeInsets.only(
+                                      right: widthDevice * 0.06),
+                                  child: Column(children: [
+                                    Container(
+                                        margin: EdgeInsets.only(
+                                            top: heightDevice * 0.01),
+                                        child: Text(
+                                          data['brand'].toString() +
+                                              " " +
+                                              data['modelYear'].toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 22),
+                                        )),
+                                    Container(
+                                      child: Text(
+                                        "\$" +
+                                            data['price'].toString() +
+                                            "/day",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    )
+                                  ]),
+                                ),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        child: Image.asset(
+                                          "assets/images/" +
+                                              data['imageVoiture'].toString(),
+                                          height: heightDevice * 0.174,
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(90),
+                                            color: Colors.red),
+                                        margin: EdgeInsets.only(
+                                            right: widthDevice * 0.01),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetailsVehicleScreen(
+                                                            data['brand'],
+                                                            data['modelYear'],
+                                                            data['review'],
+                                                            data['carburant'],
+                                                            data[
+                                                                'boiteVitesse'],
+                                                            data['speed'],
+                                                            data[
+                                                                'emplacementPrise'],
+                                                            data['price'],
+                                                            data[
+                                                                'imageVoiture'],
+                                                            data[
+                                                                'idVoiture'])));
+                                          },
+                                          child: Icon(
+                                            Icons.navigate_next_rounded,
+                                            color: Colors.white,
+                                            size: 22,
+                                          ),
+                                        ),
+                                      )
+                                    ]),
+                              ],
+                            ),
+                          ));
                     }).toList(),
                   );
                 },

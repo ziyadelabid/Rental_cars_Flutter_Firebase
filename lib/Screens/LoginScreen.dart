@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:location_voitures/Constants/constants.dart';
 import 'package:location_voitures/Screens/HomeScreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -78,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontFamily: 'RobotoMono',
                     ),
                   ),
-                )
+                ),
               ]),
             ),
             Container(
@@ -155,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           style: TextButton.styleFrom(
-                            backgroundColor: Colors.red,
+                            backgroundColor: primaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(35.0),
                             ),
@@ -185,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               "Register",
                               style: TextStyle(
-                                color: Colors.red,
+                                color: primaryColor,
                                 fontSize: 16,
                                 fontFamily: 'RobotoMono',
                                 fontWeight: FontWeight.bold,
@@ -213,7 +214,6 @@ class _LoginScreenState extends State<LoginScreen> {
           .signInWithEmailAndPassword(
               email: _emailController.text, password: _passwordController.text)
           .then((value) {
-          
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => VehicleScreen()),

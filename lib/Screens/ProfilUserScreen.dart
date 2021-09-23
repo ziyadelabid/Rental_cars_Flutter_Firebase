@@ -25,7 +25,7 @@ class _ProfilUserScreenState extends State<ProfilUserScreen> {
   late var _phoneNumberController =
       TextEditingController(text: widget.phoneNumber.toString());
 
-  late String genderValue = widget.gender.toString();
+  late String genderValue = "male";
   var items = ["male", "female"];
 
   final GlobalKey<FormState> _editProfilForm = GlobalKey<FormState>();
@@ -220,7 +220,7 @@ class _ProfilUserScreenState extends State<ProfilUserScreen> {
   }
 
   void editProfil() async {
-    await db.collection("Users").doc(widget.userId).update({
+    await db.collection("Users").doc(widget.userId).set({
       "firstName": _firstNameController.text,
       "lastName": _lastNameController.text,
       "email": _emailController.text,
