@@ -3,9 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location_voitures/Constants/constants.dart';
+import 'package:location_voitures/Screens/FavoriteScreen.dart';
 import 'package:location_voitures/Screens/LoginScreen.dart';
 import 'package:location_voitures/Screens/MyReservationScreen.dart';
 import 'package:location_voitures/Screens/ProfilUserScreen.dart';
+import 'package:location_voitures/Screens/ReportScreen.dart';
+import 'package:location_voitures/Screens/VehicleScreen.dart';
 
 class DrawerUser extends StatefulWidget {
   const DrawerUser({Key? key}) : super(key: key);
@@ -123,61 +126,98 @@ class _DrawerUserState extends State<DrawerUser> {
           ),
           Container(
             child: Column(children: [
-              ListTile(
-                title: const Text('Profil'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ProfilUserScreen(
-                              userEmail,
-                              userId,
-                              firstName,
-                              lastName,
-                              phoneNumber,
-                              gender)));
-                },
-              ),
-              ListTile(
-                title: const Text('My Reservations'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MyReservationsScreen(userId)));
-                },
-              ),
-              ListTile(
-                title: const Text('All Cars'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Report'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              SizedBox(
-                width: widthDevice * 0.25,
-                child: TextButton(
-                  onPressed: signOutFromGoogle,
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.red,
+              Column(children: [
+                ListTile(
+                  title: const Text('All Cars'),
+                  leading: Icon(Icons.car_rental, color: Colors.black),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => VehicleScreen()));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.person, color: Colors.black),
+                  title: const Text('Profil'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfilUserScreen(
+                                userEmail,
+                                userId,
+                                firstName,
+                                lastName,
+                                phoneNumber,
+                                gender)));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.payment, color: Colors.black),
+                  title: const Text('My Reservations'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                MyReservationsScreen(userId)));
+                  },
+                ),
+                ListTile(
+                  leading:
+                      Icon(Icons.favorite_rounded, color: Color(0XFFF01E1F)),
+                  title: const Text('Favourites'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FavoriteScreen()));
+                  },
+                ),
+                ListTile(
+                  title: const Text('Report'),
+                  leading: Icon(Icons.report, color: Colors.black),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ReportScreen()));
+                  },
+                ),
+                ListTile(
+                  title: const Text('Contact us'),
+                  leading: Icon(Icons.quick_contacts_mail, color: Colors.black),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ]),
+              Container(
+                margin: EdgeInsets.only(top: heightDevice * 0.1),
+                child: SizedBox(
+                  width: widthDevice * 0.25,
+                  child: TextButton(
+                    onPressed: signOutFromGoogle,
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    child: Row(children: [
+                      Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        "Log Out",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ]),
                   ),
-                  child: Row(children: [
-                    Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      "Log Out",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ]),
                 ),
               )
             ]),

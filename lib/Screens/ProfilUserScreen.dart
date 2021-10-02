@@ -42,9 +42,9 @@ class _ProfilUserScreenState extends State<ProfilUserScreen> {
               height: heightDevice * 0.3,
               decoration: BoxDecoration(color: primaryColor),
               child: Container(
-                margin: EdgeInsets.only(top: heightDevice * 0.08),
+                margin: EdgeInsets.only(bottom: heightDevice * 0.08),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
@@ -60,21 +60,20 @@ class _ProfilUserScreenState extends State<ProfilUserScreen> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(
-                          bottom: heightDevice * 0.02,
-                          left: widthDevice * 0.05),
+                      margin: EdgeInsets.only(left: widthDevice * 0.05),
                       child: Text(
                         "Profile",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                        style: TextStyle(color: Colors.white, fontSize: 24),
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(right: widthDevice * 0.05),
+                      margin: EdgeInsets.only(right: widthDevice * 0.02),
                       child: TextButton(
                         onPressed: editProfil,
-                        child: Text(
-                          "Save",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        child: Icon(
+                          Icons.save,
+                          color: Colors.white,
+                          size: 30,
                         ),
                       ),
                     )

@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:location_voitures/Constants/constants.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+enum PaymentMethods { cash, paypal, cheque, visa }
 
 class PaymentMethodScreen extends StatefulWidget {
   final String brand, modelYear, emplacementPrise, imageVoiture;
@@ -28,7 +31,7 @@ class PaymentMethodScreen extends StatefulWidget {
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestoreIns = FirebaseFirestore.instance;
-
+  PaymentMethods? _paymentMethod = PaymentMethods.cash;
   @override
   Widget build(BuildContext context) {
     double widthDevice = MediaQuery.of(context).size.width;
@@ -45,7 +48,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               Container(
                 margin: EdgeInsets.only(left: widthDevice * 0.05),
                 child: Text(
-                  "Total : " + widget.totalMontant.toString() + "DH",
+                  "Total : " + widget.totalMontant.toString() + " Dhs",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w400,
@@ -166,15 +169,107 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               ),
             ),
             Container(
-                margin: EdgeInsets.only(
-                    top: heightDevice * 0.02, left: widthDevice * 0.05),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Payment Method",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-                    ))),
+              margin: EdgeInsets.only(
+                  top: heightDevice * 0.03, left: widthDevice * 0.08),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Payment Method",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: heightDevice * 0.04),
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    title: const Text('Cash'),
+                    leading: Radio<PaymentMethods>(
+                      value: PaymentMethods.cash,
+                      groupValue: _paymentMethod,
+                      onChanged: (PaymentMethods? value) {
+                        setState(() {
+                          _paymentMethod = value;
+                        });
+                      },
+                    ),
+                    trailing: Wrap(
+                      spacing: 12,
+                      children: <Widget>[
+                        FaIcon(
+                          FontAwesomeIcons.cashRegister,
+                          color: Color(0XFF006535),
+                        )
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Paypal'),
+                    leading: Radio<PaymentMethods>(
+                      value: PaymentMethods.paypal,
+                      groupValue: _paymentMethod,
+                      onChanged: (PaymentMethods? value) {
+                        setState(() {
+                          _paymentMethod = value;
+                        });
+                      },
+                    ),
+                    trailing: Wrap(
+                      spacing: 12,
+                      children: <Widget>[
+                        FaIcon(
+                          FontAwesomeIcons.paypal,
+                          color: Color(0XFF0D367F),
+                        )
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Cheque'),
+                    leading: Radio<PaymentMethods>(
+                      value: PaymentMethods.cheque,
+                      groupValue: _paymentMethod,
+                      onChanged: (PaymentMethods? value) {
+                        setState(() {
+                          _paymentMethod = value;
+                        });
+                      },
+                    ),
+                    trailing: Wrap(
+                      spacing: 12,
+                      children: <Widget>[
+                        FaIcon(
+                          FontAwesomeIcons.check,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Visa'),
+                    leading: Radio<PaymentMethods>(
+                      value: PaymentMethods.visa,
+                      groupValue: _paymentMethod,
+                      onChanged: (PaymentMethods? value) {
+                        setState(() {
+                          _paymentMethod = value;
+                        });
+                      },
+                    ),
+                    trailing: Wrap(
+                      spacing: 12,
+                      children: <Widget>[
+                        FaIcon(
+                          FontAwesomeIcons.ccVisa,
+                          color: Color(0XFF0C1A6B),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -193,8 +288,87 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       "dateReservation": widget.startDate,
       "dateRetour": widget.endDate,
       "montantTotal": widget.totalMontant,
-      "paymentMethod": "Cash",
-      "reservationStatus": "not approved",
+      "paymentMethod": _paymentMethod.toString().split('.').last,
+      "approved": false,
+      "reviewR": widget.review,
+    }).then((value) {
+      confirmDialog(context);
+    }).onError((error, stackTrace) {
+      errorDialog(context);
     });
+  }
+
+  confirmDialog(BuildContext context) {
+    // Create button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      content: SizedBox(
+        height: 150,
+        width: 200,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FaIcon(
+                FontAwesomeIcons.check,
+                color: Colors.green,
+                size: 60,
+              ),
+              Text(
+                "Confirmed Successfully",
+                style: TextStyle(
+                  fontFamily: principalFont,
+                  fontSize: 20,
+                ),
+              ),
+            ]),
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  errorDialog(BuildContext context) {
+    // Create button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Simple Alert"),
+      content: Text("Error ! Check your network connection"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

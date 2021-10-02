@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,7 +15,8 @@ class DetailsVehicleScreen extends StatefulWidget {
       imageVoiture;
 
   final double review;
-  final int speed, price, idVoiture;
+  final int speed, price, idVoiture, power;
+  late bool favorite;
   DetailsVehicleScreen(
       this.brand,
       this.modelYear,
@@ -25,13 +27,30 @@ class DetailsVehicleScreen extends StatefulWidget {
       this.emplacementPrise,
       this.price,
       this.imageVoiture,
-      this.idVoiture);
+      this.idVoiture,
+      this.favorite,
+      this.power);
 
   @override
   _DetailsVehicleScreenState createState() => _DetailsVehicleScreenState();
 }
 
 class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
+  var db = FirebaseFirestore.instance;
+
+  static IconData? iconFav;
+  @override
+  void initState() {
+    setState(() {
+      if (widget.favorite == false) {
+        iconFav = Icons.favorite_outline;
+      } else {
+        iconFav = Icons.favorite_rounded;
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double widthDevice = MediaQuery.of(context).size.width;
@@ -40,7 +59,7 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
       bottomNavigationBar: BottomAppBar(
         child: Container(
           decoration: BoxDecoration(
-            color: Color(0XFFEC8921),
+            color: Color(0XFF78000a),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,7 +67,7 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
               Container(
                 margin: EdgeInsets.only(left: widthDevice * 0.12),
                 child: Text(
-                  widget.price.toString() + "DH/day",
+                  widget.price.toString() + " Dhs/day",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w400,
@@ -99,8 +118,26 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
       ),
       appBar: AppBar(backgroundColor: primaryColor, elevation: 0, actions: [
         Container(
-            margin: EdgeInsets.only(right: widthDevice * 0.03),
-            child: Icon(Icons.more_horiz, size: 22)),
+          margin: EdgeInsets.only(right: widthDevice * 0.05),
+          child: InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () {
+                if (widget.favorite == false) {
+                  setState(() {
+                    widget.favorite = true;
+                    iconFav = Icons.favorite_rounded;
+                  });
+                } else {
+                  setState(() {
+                    widget.favorite = false;
+                    iconFav = Icons.favorite_outline;
+                  });
+                }
+                setfavorite();
+              },
+              child: Icon(iconFav, size: 35, color: Color(0XFFF01E1F))),
+        ),
       ]),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -270,6 +307,34 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             SvgPicture.asset(
+                              "assets/Icons/powerIcon.svg",
+                              color: Colors.white,
+                              width: widthDevice * 0.15,
+                            ),
+                            Text(
+                              widget.power.toString() + " bhp",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ]),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: widthDevice * 0.04,
+                    ),
+                    height: heightDevice * 0.17,
+                    width: heightDevice * 0.22,
+                    decoration: BoxDecoration(
+                        color: secondColor,
+                        borderRadius: BorderRadius.circular(25)),
+                    child: Center(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            SvgPicture.asset(
                               "assets/Icons/gearboxIcon.svg",
                               color: Colors.white,
                               width: widthDevice * 0.15,
@@ -382,5 +447,17 @@ class _DetailsVehicleScreenState extends State<DetailsVehicleScreen> {
         ]),
       ),
     );
+  }
+
+  void setfavorite() async {
+    await db
+        .collection("Vehicles")
+        .where('idVoiture', isEqualTo: int.parse(widget.idVoiture.toString()))
+        .get()
+        .then((val) => val.docs.forEach((doc) => {
+              doc.reference.update({
+                'favorite': widget.favorite,
+              })
+            }));
   }
 }

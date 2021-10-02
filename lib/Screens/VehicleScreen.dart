@@ -14,6 +14,7 @@ class VehicleScreen extends StatefulWidget {
 }
 
 class _VehicleScreenState extends State<VehicleScreen> {
+  bool searchBarActivated = false;
   final Stream<QuerySnapshot> _promotionsStream = FirebaseFirestore.instance
       .collection('Vehicles')
       .where('promotion', isNotEqualTo: 0)
@@ -69,7 +70,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
     return Scaffold(
       appBar: AppBar(elevation: 0, backgroundColor: primaryColor),
       drawer: DrawerUser(),
-      backgroundColor: Color(0XFFf2f2f2),
+      backgroundColor: const Color(0XFFF3F3F4),
       body: Container(
         child: SingleChildScrollView(
           physics: ScrollPhysics(),
@@ -116,15 +117,19 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                               data['modelYear'].toString(),
                                           style: TextStyle(
                                               color: Colors.white,
+                                              fontFamily: principalFont,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 22),
                                         )),
                                     Container(
                                       child: Text(
-                                        "\$" +
-                                            data['price'].toString() +
+                                        data['price'].toString() +
+                                            " Dhs" +
                                             "/day",
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: principalFont,
+                                        ),
                                       ),
                                     )
                                   ]),
@@ -153,22 +158,22 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DetailsVehicleScreen(
-                                                            data['brand'],
-                                                            data['modelYear'],
-                                                            data['review'],
-                                                            data['carburant'],
-                                                            data[
-                                                                'boiteVitesse'],
-                                                            data['speed'],
-                                                            data[
-                                                                'emplacementPrise'],
-                                                            data['price'],
-                                                            data[
-                                                                'imageVoiture'],
-                                                            data[
-                                                                'idVoiture'])));
+                                                  builder: (context) =>
+                                                      DetailsVehicleScreen(
+                                                    data['brand'],
+                                                    data['modelYear'],
+                                                    data['review'],
+                                                    data['carburant'],
+                                                    data['boiteVitesse'],
+                                                    data['speed'],
+                                                    data['emplacementPrise'],
+                                                    data['price'],
+                                                    data['imageVoiture'],
+                                                    data['idVoiture'],
+                                                    data['favorite'],
+                                                    data['power'],
+                                                  ),
+                                                ));
                                           },
                                           child: Icon(
                                             Icons.navigate_next_rounded,
@@ -197,7 +202,10 @@ class _VehicleScreenState extends State<VehicleScreen> {
                       child: Text(
                         "Brands",
                         style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w500),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: principalFont,
+                        ),
                       ),
                     ),
                   ),
@@ -230,6 +238,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
+                                        fontFamily: principalFont,
                                         color: Colors.white),
                                   )),
                             ),
@@ -355,12 +364,20 @@ class _VehicleScreenState extends State<VehicleScreen> {
                             child: Text(
                               "Available Cars",
                               style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w500),
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: principalFont,
+                              ),
                             ),
                           ),
-                          Icon(
-                            Icons.image_search,
-                            size: 24,
+                          InkWell(
+                            onTap: () {
+                              searchBarActivated = true;
+                            },
+                            child: Icon(
+                              Icons.image_search,
+                              size: 24,
+                            ),
                           ),
                         ]),
                   ),
@@ -382,10 +399,19 @@ class _VehicleScreenState extends State<VehicleScreen> {
                           height: heightDevice * 0.2,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black,
+                                blurRadius: 0.5,
+                                spreadRadius: 0.0,
+                                offset: Offset(
+                                    2.0, 2.0), // shadow direction: bottom right
+                              )
+                            ],
                           ),
                           child: Container(
-                            padding: EdgeInsets.all(5),
+                            padding: EdgeInsets.only(top: 10, left: 5),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -405,9 +431,8 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                         bottom: heightDevice * 0.02,
                                       ),
                                       child: Text(
-                                        "\$" +
-                                            vehicleList[index]['price']
-                                                .toString() +
+                                        vehicleList[index]['price'].toString() +
+                                            " Dhs" +
                                             "/day",
                                         style: TextStyle(
                                           color: Colors.black,
@@ -426,8 +451,6 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         margin: EdgeInsets.only(
@@ -455,16 +478,19 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                           ),
                                         ]),
                                       ),
-                                      SizedBox(
-                                        height: heightDevice * 0.06,
-                                        width: widthDevice * 0.385,
-                                        child: TextButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DetailsVehicleScreen(
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Container(
+                                          alignment: Alignment.bottomRight,
+                                          child: SizedBox(
+                                            height: heightDevice * 0.06,
+                                            width: widthDevice * 0.385,
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => DetailsVehicleScreen(
                                                             vehicleList[index]
                                                                 ['brand'],
                                                             vehicleList[index]
@@ -483,22 +509,31 @@ class _VehicleScreenState extends State<VehicleScreen> {
                                                                 ['price'],
                                                             vehicleList[index][
                                                                 'imageVoiture'],
-                                                            vehicleList[index][
-                                                                'idVoiture'])));
-                                          },
-                                          child: Text(
-                                            "Details",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 17),
-                                          ),
-                                          style: TextButton.styleFrom(
-                                            backgroundColor: primaryColor,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(25))),
+                                                            vehicleList[index]
+                                                                ['idVoiture'],
+                                                            vehicleList[index]
+                                                                ['favorite'],
+                                                            vehicleList[index]
+                                                                ['power'])));
+                                              },
+                                              child: Text(
+                                                "Details",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 17),
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                backgroundColor: primaryColor,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                  topLeft: Radius.circular(25),
+                                                  bottomRight:
+                                                      Radius.circular(25),
+                                                )),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       )

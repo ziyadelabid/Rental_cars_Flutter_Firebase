@@ -1,21 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:location_voitures/Constants/constants.dart';
-import 'package:intl/intl.dart';
-import 'package:location_voitures/Screens/DetailsMyReservations.dart';
+import 'package:location_voitures/Screens/DetailsVehicleScreen.dart';
 
-class MyReservationsScreen extends StatefulWidget {
-  final String? userId;
-  MyReservationsScreen(this.userId);
+class FavoriteScreen extends StatefulWidget {
+  const FavoriteScreen({Key? key}) : super(key: key);
 
   @override
-  State<MyReservationsScreen> createState() => _MyReservationsScreenState();
+  _FavoriteScreenState createState() => _FavoriteScreenState();
 }
 
-class _MyReservationsScreenState extends State<MyReservationsScreen> {
-  late Stream<QuerySnapshot> _reservationStream = FirebaseFirestore.instance
-      .collection('Reservations')
-      .where('idUser', isEqualTo: widget.userId)
+class _FavoriteScreenState extends State<FavoriteScreen> {
+  late Stream<QuerySnapshot> _favoriteStream = FirebaseFirestore.instance
+      .collection('Vehicles')
+      .where('favorite', isEqualTo: true)
       .snapshots();
   @override
   Widget build(BuildContext context) {
@@ -24,12 +22,12 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
     return Scaffold(
       backgroundColor: const Color(0XFFF3F3F4),
       appBar: AppBar(
-        title: Text("My Reservations"),
+        title: Text("My Favorites"),
         elevation: 0,
         backgroundColor: primaryColor,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _reservationStream,
+        stream: _favoriteStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Something went wrong');
@@ -43,10 +41,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
                   document.data()! as Map<String, dynamic>;
-              DateTime dt = (data['dateReservation'] as Timestamp).toDate();
-              String formattedDateRes = DateFormat('dd/MM/yyyy').format(dt);
-              DateTime dr = (data['dateRetour'] as Timestamp).toDate();
-              String formattedDateRet = DateFormat('dd/MM/yyyy').format(dr);
+
               return Container(
                 margin: EdgeInsets.only(
                     top: heightDevice * 0.01,
@@ -77,7 +72,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "assets/images/" + data['imageVoitureR'].toString(),
+                            "assets/images/" + data['imageVoiture'].toString(),
                             height: heightDevice * 0.11,
                           ),
                           Container(
@@ -85,7 +80,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                               bottom: heightDevice * 0.02,
                             ),
                             child: Text(
-                              formattedDateRes,
+                              data['price'].toString() + " Dhs" + "/day",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 18,
@@ -109,7 +104,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                               ),
                               child: Column(children: [
                                 Text(
-                                  data['brandR'].toString(),
+                                  data['brand'].toString(),
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 22,
@@ -118,7 +113,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                                   ),
                                 ),
                                 Text(
-                                  data['modelYearR'].toString(),
+                                  data['modelYear'].toString(),
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
@@ -139,30 +134,32 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DetailsMyReservations(
-                                                    data['brandR'],
-                                                    data['modelYearR'],
-                                                    data['imageVoitureR'],
-                                                    formattedDateRes,
-                                                    formattedDateRet,
-                                                    data['approved'],
-                                                    data['montantTotal'],
-                                                    data['paymentMethod'],
-                                                    data['reviewR'],
-                                                  )));
+                                            builder: (context) =>
+                                                DetailsVehicleScreen(
+                                              data['brand'],
+                                              data['modelYear'],
+                                              data['review'],
+                                              data['carburant'],
+                                              data['boiteVitesse'],
+                                              data['speed'],
+                                              data['emplacementPrise'],
+                                              data['price'],
+                                              data['imageVoiture'],
+                                              data['idVoiture'],
+                                              data['favorite'],
+                                              data['power'],
+                                            ),
+                                          ));
                                     },
                                     child: Text(
-                                      "Check Status",
+                                      "Details",
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 17),
                                     ),
                                     style: TextButton.styleFrom(
-                                      backgroundColor: data['approved']
-                                          ? Colors.green
-                                          : Colors.red,
+                                      backgroundColor: primaryColor,
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(25),

@@ -32,7 +32,8 @@ dependencies:
   lottie: ^1.1.0
   syncfusion_flutter_datepicker: ^19.2.62
   smart_select: ^4.3.2
-  carousel_slider: ^4.0.0
+  intl: ^0.17.0
+  font_awesome_flutter: ^9.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -73,6 +74,11 @@ flutter:
     - family: RobotoMono
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
+    - family: Helvetica
+      fonts:
+        - asset: assets/fonts/Helvetica.ttf
+        - asset: assets/fonts/Helvetica-BoldOblique.ttf
+        - asset: assets/fonts/Helvetica-Bold.ttf
 
   #
   # For details regarding fonts from package dependencies,

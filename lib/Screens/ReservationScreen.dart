@@ -38,7 +38,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               Container(
                 margin: EdgeInsets.only(left: widthDevice * 0.05),
                 child: Text(
-                  "Total : " + totalMontant.toString() + "DH",
+                  "Total : " + totalMontant.toString() + " Dhs",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w400,

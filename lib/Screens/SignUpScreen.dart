@@ -17,16 +17,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
   var _confirmPwdController = TextEditingController();
-  var _firstNameController = TextEditingController();
-  var _lastNameController = TextEditingController();
 
   @override
   void initState() {
     _emailController = new TextEditingController();
     _passwordController = new TextEditingController();
     _confirmPwdController = new TextEditingController();
-    _firstNameController = new TextEditingController();
-    _lastNameController = new TextEditingController();
 
     super.initState();
   }
